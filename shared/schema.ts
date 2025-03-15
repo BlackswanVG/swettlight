@@ -18,9 +18,14 @@ export const listings = pgTable("listings", {
   projectedROI: text("projected_roi").notNull(),
   ownershipPercentage: integer("ownership_percentage").notNull(),
   createdById: integer("created_by_id").notNull(),
-  status: text("status").notNull().default("pending"), // pending, approved, rejected
+  status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   details: jsonb("details").notNull(),
+  imageUrl: text("image_url"),
+  tokenSupply: integer("token_supply"),
+  tokenPrice: text("token_price"),
+  tokenContractAddress: text("token_contract_address"),
+  vesselIdentifiers: jsonb("vessel_identifiers").notNull(),
 });
 
 export const votes = pgTable("votes", {
@@ -44,6 +49,11 @@ export const insertListingSchema = createInsertSchema(listings).pick({
   projectedROI: true,
   ownershipPercentage: true,
   details: true,
+  imageUrl:true,
+  tokenSupply: true,
+  tokenPrice: true,
+  tokenContractAddress: true,
+  vesselIdentifiers: true,
 });
 
 export const insertVoteSchema = createInsertSchema(votes).pick({
