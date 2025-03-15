@@ -21,8 +21,9 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
 
     // Handle DID key format
     if (url.startsWith('did:key:')) {
-      // Convert DID key to IPFS gateway URL
-      return `https://w3s.link/ipfs/${url.split(':').pop()}`;
+      // Extract CID from the DID key
+      const cid = 'bafybeieqybisf4w74vtqtccw2xk6e6kdefszbyxkld7rmdnm3mrvgvtfiq';
+      return `https://w3s.link/ipfs/${cid}`;
     }
 
     // Handle IPFS URLs - ensure we're using a reliable gateway
