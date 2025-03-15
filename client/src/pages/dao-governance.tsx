@@ -39,85 +39,87 @@ export default function DAOGovernancePage() {
   }, [user?.walletAddress, toast]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="space-y-4">
-        <h1 className="text-4xl font-bold">DAO Governance</h1>
-        <p className="text-muted-foreground">
-          Participate in the Marine DAO governance process and shape the future of maritime investments
-        </p>
-      </div>
+    <div className="min-h-screen bg-violet-500/25">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="space-y-4">
+          <h1 className="text-4xl font-bold">DAO Governance</h1>
+          <p className="text-muted-foreground">
+            Participate in the Marine DAO governance process and shape the future of maritime investments
+          </p>
+        </div>
 
-      <div className="mt-8 grid gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Your DAO Status</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {!user?.walletAddress ? (
-              <div className="text-center py-4">
-                <Wallet className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">
-                  Please connect your wallet to view your DAO status
-                </p>
-              </div>
-            ) : (
-              <>
-                <div>
-                  <p className="text-sm font-medium">Connected Wallet</p>
-                  <p className="text-xl font-mono">
-                    {user.walletAddress.slice(0, 6)}...{user.walletAddress.slice(-4)}
+        <div className="mt-8 grid gap-6">
+          <Card className="bg-white/90 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle>Your DAO Status</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {!user?.walletAddress ? (
+                <div className="text-center py-4">
+                  <Wallet className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground">
+                    Please connect your wallet to view your DAO status
                   </p>
                 </div>
-                <div>
-                  <p className="text-sm font-medium">MDT Balance</p>
-                  {isLoading ? (
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Loading balance...</span>
-                    </div>
-                  ) : (
-                    <p className="text-2xl font-bold">{tokenBalance || '0'} MDT</p>
-                  )}
-                </div>
-                <div>
-                  <p className="text-sm font-medium">Voting Power</p>
-                  <p className="text-2xl font-bold">
+              ) : (
+                <>
+                  <div>
+                    <p className="text-sm font-medium">Connected Wallet</p>
+                    <p className="text-xl font-mono">
+                      {user.walletAddress.slice(0, 6)}...{user.walletAddress.slice(-4)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">MDT Balance</p>
                     {isLoading ? (
                       <div className="flex items-center gap-2">
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        <span>Calculating...</span>
+                        <span>Loading balance...</span>
                       </div>
                     ) : (
-                      `${tokenBalance || '0'}%`
+                      <p className="text-2xl font-bold">{tokenBalance || '0'} MDT</p>
                     )}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Voting Power</p>
+                    <p className="text-2xl font-bold">
+                      {isLoading ? (
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <span>Calculating...</span>
+                        </div>
+                      ) : (
+                        `${tokenBalance || '0'}%`
+                      )}
+                    </p>
+                  </div>
+                </>
+              )}
+              {!user?.isKYCVerified && (
+                <div className="mt-4">
+                  <Badge variant="destructive">KYC Required</Badge>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Complete KYC verification to participate in DAO governance
                   </p>
                 </div>
-              </>
-            )}
-            {!user?.isKYCVerified && (
-              <div className="mt-4">
-                <Badge variant="destructive">KYC Required</Badge>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Complete KYC verification to participate in DAO governance
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Active Proposals</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">No active proposals at the moment</p>
-              {user?.isKYCVerified && (
-                <Button className="mt-4">Create Proposal</Button>
               )}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/90 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle>Active Proposals</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No active proposals at the moment</p>
+                {user?.isKYCVerified && (
+                  <Button className="mt-4">Create Proposal</Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
