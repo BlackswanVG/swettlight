@@ -6,6 +6,7 @@ import { queryClient } from "./lib/queryClient";
 import HomePage from "@/pages/home-page";
 import AuthPage from "@/pages/auth-page";
 import CreateListing from "@/pages/create-listing";
+import DAOGovernance from "@/pages/dao-governance";
 import NotFound from "@/pages/not-found";
 import { ProtectedRoute } from "./lib/protected-route";
 import Navbar from "./components/layout/navbar";
@@ -16,6 +17,7 @@ function Router() {
       <Navbar />
       <Switch>
         <ProtectedRoute path="/" component={HomePage} />
+        <ProtectedRoute path="/dao" component={DAOGovernance} />
         <ProtectedRoute path="/create-listing" component={CreateListing} />
         <Route path="/auth" component={AuthPage} />
         <Route component={NotFound} />

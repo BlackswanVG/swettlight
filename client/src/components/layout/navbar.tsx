@@ -32,6 +32,13 @@ export default function Navbar() {
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
+              <Link href="/dao">
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  DAO Governance
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
               <Link href="/create-listing">
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Create Listing
