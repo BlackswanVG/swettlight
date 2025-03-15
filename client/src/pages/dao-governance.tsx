@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { getDAOTokenBalance } from "@/lib/web3";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Wallet } from "lucide-react";
+import { Wallet } from "lucide-react";
+import { MaritimeLoader } from "@/components/ui/maritime-loader";
 
 export default function DAOGovernancePage() {
   const { user } = useAuth();
@@ -73,7 +74,7 @@ export default function DAOGovernancePage() {
                     <p className="text-sm font-medium">MDT Balance</p>
                     {isLoading ? (
                       <div className="flex items-center gap-2">
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <MaritimeLoader variant="ship" size="sm" />
                         <span>Loading balance...</span>
                       </div>
                     ) : (
@@ -85,7 +86,7 @@ export default function DAOGovernancePage() {
                     <p className="text-2xl font-bold">
                       {isLoading ? (
                         <div className="flex items-center gap-2">
-                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <MaritimeLoader variant="waves" size="sm" />
                           <span>Calculating...</span>
                         </div>
                       ) : (
