@@ -1,0 +1,46 @@
+Build a full-stack Web3 investment marketplace using React (Vite), Tailwind CSS, Node.js (Express), PostgreSQL, and Solidity. The platform should enable:
+
+User Authentication & KYC
+Web2 login via email/password (Firebase/Auth0).
+Web3 login via MetaMask, WalletConnect, and Coinbase Wallet.
+KYC verification (via Onfido/Sumsub) before users can participate in DAO voting, investments, or token purchases.
+Marketplace Features
+A Wyoming DAO governing all listings and investments.
+ERC-20 DAO Membership Token (DMT) (fixed supply: 10,000 tokens), representing DAO LLC shares.
+NFT marketplace where fractional ownership of vessels, barges, or scrapping voyages is tokenized.
+DAO members vote on listing approvals before they go live.
+DAO Voting & Governance
+Snapshot-based governance (voting based on token balances at proposal submission).
+Temperature check (initial sentiment poll before a full DAO vote).
+Proposals must receive 20% support from token holders before moving to final voting.
+Voting determines which investment opportunities are listed and treasury fund usage.
+New Listing Application Page
+Create a structured page where offerors submit new investment opportunities, containing:
+
+Brief project report (summary of investment, type of vessel, operational strategy).
+Projected ROI (expected returns, cash flow structure).
+Percentage of ownership offered (DAO never takes controlling shares).
+Minority shareholder rights (veto rights, dispute resolution mechanisms).
+Legal commitment verification (Is the offeror ready to sign legal agreements and deposit them in a Wyoming law firm?).
+DAO Voting Process: Once submitted, DAO members can review and vote on listing approval.
+If the listing is approved:
+
+A project whitepaper page is auto-generated, detailing investment mechanics.
+ERC-20 / NFT tokens associated with the investment become tradeable.
+Smart Contracts
+ERC-20 contract for DAO membership tokens.
+ERC-721 or ERC-1155 contracts for NFT-based vessel ownership.
+Treasury governance contract for managing DAO funds.
+Technical Stack
+Frontend: React (Vite), Tailwind CSS, Web3.js / Ethers.js.
+Backend: Node.js (Express) + PostgreSQL.
+Blockchain: Solidity on Polygon or Ethereum L2s (for lower gas fees).
+File Storage: IPFS / Arweave (for whitepapers & legal documents).
+Security & Compliance
+Multi-signature wallets for treasury management.
+Chainlink price feeds for real-time vessel valuation.
+ENS integration for DAO treasury addresses.
+Additional Integrations
+Stablecoin payments (USDC, USDT) to minimize volatility.
+Fiat On-Ramp via MoonPay/Ramp Network.
+Etherscan or Blockscout integration for transaction transparency.
