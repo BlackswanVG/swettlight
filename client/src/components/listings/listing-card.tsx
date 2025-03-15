@@ -39,44 +39,7 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
           </div>
         </div>
 
-        {(listing.whitepaperCID || listing.legalDocumentsCID) && (
-          <div className="flex gap-2 pt-2">
-            {listing.whitepaperCID && (
-              <Button
-                variant="outline"
-                size="sm"
-                asChild
-                className="flex-1"
-              >
-                <a
-                  href={getIPFSUrl(listing.whitepaperCID)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <FileText className="mr-2 h-4 w-4" />
-                  Whitepaper
-                </a>
-              </Button>
-            )}
-            {listing.legalDocumentsCID && (
-              <Button
-                variant="outline"
-                size="sm"
-                asChild
-                className="flex-1"
-              >
-                <a
-                  href={getIPFSUrl(listing.legalDocumentsCID)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Scale className="mr-2 h-4 w-4" />
-                  Legal Docs
-                </a>
-              </Button>
-            )}
-          </div>
-        )}
+        
 
         {onVote && (
           <div className="flex gap-2 mt-4">
