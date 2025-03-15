@@ -11,6 +11,8 @@ export const users = pgTable("users", {
 });
 
 export const listings = pgTable("listings", {
+  whitepaperCID: text("whitepaper_cid"),
+  legalDocumentsCID: text("legal_documents_cid"),
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   description: text("description").notNull(),
