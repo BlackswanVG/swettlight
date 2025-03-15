@@ -25,8 +25,16 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
+        {listing.imageUrl && (
+          <img 
+            src={listing.imageUrl} 
+            alt={listing.title}
+            className="w-full h-48 object-cover rounded-md"
+          />
+        )}
+
         <p className="text-muted-foreground">{listing.description}</p>
-        
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <p className="text-sm font-medium">Projected ROI</p>
@@ -35,6 +43,31 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
           <div>
             <p className="text-sm font-medium">Ownership Available</p>
             <p className="text-2xl font-bold">{listing.ownershipPercentage}%</p>
+          </div>
+        </div>
+
+        <div className="border-t pt-4 mt-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm font-medium">Token Supply</p>
+              <p className="text-lg">{listing.tokenSupply?.toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Token Price</p>
+              <p className="text-lg">${listing.tokenPrice}</p>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <p className="text-sm font-medium">Vessel Identifiers</p>
+            <div className="text-sm font-mono mt-1">
+              {listing.vesselIdentifiers && (
+                <>
+                  <p>IMO: {(listing.vesselIdentifiers as any).IMO}</p>
+                  <p>MMSI: {(listing.vesselIdentifiers as any).MMSI}</p>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
