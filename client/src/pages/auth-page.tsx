@@ -68,8 +68,8 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted p-4">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
+    <div className="min-h-screen bg-gradient-to-br from-red-500/25 to-yellow-500/25">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center p-4">
         <div className="space-y-6">
           <div className="space-y-2">
             <h1 className="text-4xl font-bold tracking-tight">
@@ -80,7 +80,7 @@ export default function AuthPage() {
             </p>
           </div>
 
-          <Card>
+          <Card className="bg-white/90 backdrop-blur-sm">
             <CardContent className="p-6">
               <Tabs defaultValue="login">
                 <TabsList className="grid grid-cols-2 w-full">
