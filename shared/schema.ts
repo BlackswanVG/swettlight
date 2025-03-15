@@ -17,10 +17,12 @@ export const listings = pgTable("listings", {
   vesselType: text("vessel_type").notNull(),
   projectedROI: text("projected_roi").notNull(),
   ownershipPercentage: integer("ownership_percentage").notNull(),
-  createdById: integer("created_by_id").notNull(),
+  createdById: integer("created_by_id")
+    .references(() => users.id)
+    .notNull(),
   status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  details: jsonb("details").notNull(),
+  details: jsonb("details").notNull().$type<Record<string, unknown>>(),
   whitepaperCID: text("whitepaper_cid"),
   legalDocumentsCID: text("legal_documents_cid"),
 });
