@@ -23,21 +23,67 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { uploadToIPFS } from "@/lib/ipfs";
+import { Loader2, Upload } from "lucide-react";
+import { useState } from "react";
+
+type ListingFormData = {
+  title: string;
+  description: string;
+  vesselType: string;
+  projectedROI: string;
+  ownershipPercentage: number;
+  details: Record<string, unknown>;
+  whitepaper?: File;
+  legalDocuments?: File;
+};
 
 export default function CreateListing() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const [isUploading, setIsUploading] = useState(false);
 
-  const form = useForm({
+  const form = useForm<ListingFormData>({
     resolver: zodResolver(insertListingSchema),
     defaultValues: {
+      title: "",
+      description: "",
+      vesselType: "",
+      projectedROI: "",
+      ownershipPercentage: 0,
       details: {},
     },
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data: any) => {
-      await apiRequest("POST", "/api/listings", data);
+    mutationFn: async (data: ListingFormData) => {
+      setIsUploading(true);
+      try {
+        let whitepaperCID: string | undefined;
+        let legalDocumentsCID: string | undefined;
+
+        if (data.whitepaper) {
+          whitepaperCID = await uploadToIPFS(data.whitepaper);
+        }
+
+        if (data.legalDocuments) {
+          legalDocumentsCID = await uploadToIPFS(data.legalDocuments);
+        }
+
+        const listingData = {
+          ...data,
+          whitepaperCID,
+          legalDocumentsCID,
+        };
+
+        // Remove the File objects before sending to API
+        delete listingData.whitepaper;
+        delete listingData.legalDocuments;
+
+        await apiRequest("POST", "/api/listings", listingData);
+      } finally {
+        setIsUploading(false);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/listings"] });
@@ -46,6 +92,13 @@ export default function CreateListing() {
         description: "Listing created successfully",
       });
       setLocation("/");
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error creating listing",
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 
@@ -143,12 +196,60 @@ export default function CreateListing() {
             )}
           />
 
+          <FormField
+            control={form.control}
+            name="whitepaper"
+            render={({ field: { value, onChange, ...field } }) => (
+              <FormItem>
+                <FormLabel>Whitepaper (PDF)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => onChange(e.target.files?.[0])}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="legalDocuments"
+            render={({ field: { value, onChange, ...field } }) => (
+              <FormItem>
+                <FormLabel>Legal Documents (PDF)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => onChange(e.target.files?.[0])}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <Button
             type="submit"
             className="w-full"
-            disabled={createMutation.isPending}
+            disabled={createMutation.isPending || isUploading}
           >
-            Create Listing
+            {(createMutation.isPending || isUploading) ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {isUploading ? "Uploading Documents..." : "Creating Listing..."}
+              </>
+            ) : (
+              <>
+                <Upload className="mr-2 h-4 w-4" />
+                Create Listing
+              </>
+            )}
           </Button>
         </form>
       </Form>
