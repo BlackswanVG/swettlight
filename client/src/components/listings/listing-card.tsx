@@ -19,18 +19,9 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
   const getImageUrl = (url: string | undefined) => {
     if (!url) return undefined;
 
-    // Handle DID key format
-    if (url.startsWith('did:key:')) {
-      // Try both the CID and shard formats
-      const shard = 'bagbaierak23rovwviropqrjmxs2dqkcbb5tmin733liatu3xzdvkt6v4redq';
-      const cid = 'bafybeieqybisf4w74vtqtccw2xk6e6kdefszbyxkld7rmdnm3mrvgvtfiq';
-      // Return array of possible URLs to try
-      return `https://ipfs.io/ipfs/${shard}`;
-    }
-
-    // Handle IPFS URLs - ensure we're using a reliable gateway
-    if (url.includes('ipfs')) {
-      return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
+    // If it's a DID key or IPFS URL, use the local image as fallback
+    if (url.startsWith('did:key:') || url.includes('ipfs')) {
+      return '/attached_assets/oystr.png';
     }
 
     return url;
@@ -69,7 +60,7 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
                 setImageLoading(false);
                 setImageError(true);
                 const target = e.target as HTMLImageElement;
-                target.src = '/placeholder-vessel.png';
+                target.src = '/attached_assets/oystr.png';
               }}
             />
           </div>
