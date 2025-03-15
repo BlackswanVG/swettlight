@@ -39,6 +39,13 @@ export default function Navbar() {
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
+              <Link href="/news">
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Maritime News
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
               <Link href="/create-listing">
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Create Listing
