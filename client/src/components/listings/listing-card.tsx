@@ -15,18 +15,6 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
 
-  // Function to handle IPFS and DID URLs
-  const getImageUrl = (url: string | undefined) => {
-    if (!url) return undefined;
-
-    // If it's a DID key or IPFS URL, use the local image as fallback
-    if (url.startsWith('did:key:') || url.includes('ipfs')) {
-      return '/attached_assets/oystr.png';
-    }
-
-    return url;
-  };
-
   return (
     <Card>
       <CardHeader className="space-y-1">
@@ -50,7 +38,7 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
               </div>
             )}
             <img 
-              src={getImageUrl(listing.imageUrl)}
+              src={listing.imageUrl}
               alt={listing.title}
               className={`h-full w-full object-cover transition-opacity duration-300 ${
                 imageLoading ? 'opacity-0' : 'opacity-100'
@@ -60,7 +48,7 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
                 setImageLoading(false);
                 setImageError(true);
                 const target = e.target as HTMLImageElement;
-                target.src = '/attached_assets/oystr.png';
+                target.src = listing.imageUrl;
               }}
             />
           </div>
