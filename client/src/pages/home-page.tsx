@@ -1,9 +1,9 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import ListingCard from "@/components/listings/listing-card";
 import type { Listing } from "@shared/schema";
+import { MaritimeLoader } from "@/components/ui/maritime-loader";
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -30,7 +30,10 @@ export default function HomePage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <div className="text-center space-y-4">
+          <MaritimeLoader variant="ship" size="lg" />
+          <p className="text-muted-foreground animate-pulse">Loading listings...</p>
+        </div>
       </div>
     );
   }

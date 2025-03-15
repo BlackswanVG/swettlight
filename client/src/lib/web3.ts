@@ -25,6 +25,8 @@ export async function getDAOTokenBalance(address: string) {
   const tokenAddress = import.meta.env.VITE_DAO_TOKEN_ADDRESS;
   if (!tokenAddress) {
     console.warn('DAO token address not configured, returning mock balance');
+    // Add artificial delay for demonstration
+    await new Promise(resolve => setTimeout(resolve, 2000));
     return '100.00';
   }
 
