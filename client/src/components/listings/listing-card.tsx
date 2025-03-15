@@ -10,6 +10,25 @@ interface ListingCardProps {
 }
 
 export default function ListingCard({ listing, onVote }: ListingCardProps) {
+  // Function to handle IPFS and DID URLs
+  const getImageUrl = (url: string | undefined) => {
+    if (!url) return undefined;
+
+    // Handle DID key format
+    if (url.startsWith('did:key:')) {
+      // For now, we'll use a placeholder for DID keys
+      return url;
+    }
+
+    // Handle IPFS URLs
+    if (url.includes('ipfs')) {
+      // Use the direct IPFS gateway URL if provided
+      return url;
+    }
+
+    return url;
+  };
+
   return (
     <Card>
       <CardHeader className="space-y-1">
@@ -26,11 +45,18 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         {listing.imageUrl && (
-          <img 
-            src={listing.imageUrl} 
-            alt={listing.title}
-            className="w-full h-48 object-cover rounded-md"
-          />
+          <div className="relative w-full h-48 overflow-hidden rounded-md">
+            <img 
+              src={getImageUrl(listing.imageUrl)}
+              alt={listing.title}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                // Fallback if image fails to load
+                const target = e.target as HTMLImageElement;
+                target.src = '/placeholder-vessel.png';
+              }}
+            />
+          </div>
         )}
 
         <p className="text-muted-foreground">{listing.description}</p>
@@ -60,14 +86,13 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
 
           <div className="mt-4">
             <p className="text-sm font-medium">Vessel Identifiers</p>
-            <div className="text-sm font-mono mt-1">
-              {listing.vesselIdentifiers && (
-                <>
-                  <p>IMO: {(listing.vesselIdentifiers as any).IMO}</p>
-                  <p>MMSI: {(listing.vesselIdentifiers as any).MMSI}</p>
-                </>
-              )}
-            </div>
+            {listing.vesselIdentifiers && (
+              <div className="text-sm font-mono mt-1 space-y-1">
+                {Object.entries(listing.vesselIdentifiers).map(([key, value]) => (
+                  <p key={key}>{key}: {value}</p>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
