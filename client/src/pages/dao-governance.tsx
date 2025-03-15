@@ -7,12 +7,21 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Wallet } from "lucide-react";
 import { MaritimeLoader } from "@/components/ui/maritime-loader";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import CreateProposal from "@/components/dao/create-proposal";
+import { useQuery } from "@tanstack/react-query";
+import type { Proposal } from "@shared/schema";
 
 export default function DAOGovernancePage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [tokenBalance, setTokenBalance] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showProposalDialog, setShowProposalDialog] = useState(false);
+
+  const { data: proposals, isLoading: isLoadingProposals } = useQuery<Proposal[]>({
+    queryKey: ["/api/proposals"],
+  });
 
   useEffect(() => {
     async function fetchBalance() {
@@ -108,16 +117,51 @@ export default function DAOGovernancePage() {
           </Card>
 
           <Card className="bg-white/90 backdrop-blur-sm">
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Active Proposals</CardTitle>
+              {user?.isKYCVerified && (
+                <Dialog open={showProposalDialog} onOpenChange={setShowProposalDialog}>
+                  <DialogTrigger asChild>
+                    <Button>Create Proposal</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Create New Proposal</DialogTitle>
+                    </DialogHeader>
+                    <CreateProposal onSuccess={() => setShowProposalDialog(false)} />
+                  </DialogContent>
+                </Dialog>
+              )}
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <p className="text-muted-foreground">No active proposals at the moment</p>
-                {user?.isKYCVerified && (
-                  <Button className="mt-4">Create Proposal</Button>
-                )}
-              </div>
+              {isLoadingProposals ? (
+                <div className="flex items-center justify-center py-8">
+                  <MaritimeLoader variant="anchor" size="lg" />
+                </div>
+              ) : !proposals?.length ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">No active proposals at the moment</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {proposals.map((proposal) => (
+                    <Card key={proposal.id}>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-lg">{proposal.title}</CardTitle>
+                          <Badge>{proposal.status}</Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground">{proposal.description}</p>
+                        <div className="mt-4 text-sm">
+                          <p>Ends: {new Date(proposal.endDate).toLocaleDateString()}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
