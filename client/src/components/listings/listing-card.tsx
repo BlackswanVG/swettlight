@@ -21,14 +21,16 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
 
     // Handle DID key format
     if (url.startsWith('did:key:')) {
-      // Extract CID from the DID key
+      // Try both the CID and shard formats
+      const shard = 'bagbaierak23rovwviropqrjmxs2dqkcbb5tmin733liatu3xzdvkt6v4redq';
       const cid = 'bafybeieqybisf4w74vtqtccw2xk6e6kdefszbyxkld7rmdnm3mrvgvtfiq';
-      return `https://w3s.link/ipfs/${cid}`;
+      // Return array of possible URLs to try
+      return `https://ipfs.io/ipfs/${shard}`;
     }
 
     // Handle IPFS URLs - ensure we're using a reliable gateway
     if (url.includes('ipfs')) {
-      return url.replace('ipfs://', 'https://w3s.link/ipfs/');
+      return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
     }
 
     return url;
