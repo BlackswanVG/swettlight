@@ -46,6 +46,13 @@ export default function Navbar() {
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
+              <Link href="/wallets">
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Wallets
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
               <Link href="/create-listing">
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Create Listing
