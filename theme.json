@@ -3,5 +3,6 @@
   "variant": "professional",
   "primary": "hsl(210 100% 50%)",
   "appearance": "light",
-  "radius": 0.75
+  "radius": 0.75,
+  "background": "hsl(210 50% 97%)"
 }
