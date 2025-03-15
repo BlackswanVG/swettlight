@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MaritimeLoader } from "@/components/ui/maritime-loader";
-import { Wallet, Lock, Coins, Building2 } from "lucide-react";
+import { Wallet, Lock, Coins, Building2, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -12,6 +12,7 @@ interface WalletDetails {
   address: string;
   balance: string;
   type: "dev" | "treasury" | "dividends-received" | "dividends-distributed";
+  isAuthorized?: boolean;
   lockPeriod?: {
     start: string;
     end: string;
@@ -27,6 +28,7 @@ interface WalletDetails {
 export default function WalletManagementPage() {
   const { user } = useAuth();
   const [selectedWallet, setSelectedWallet] = useState<WalletDetails | null>(null);
+  const [showSensitiveInfo, setShowSensitiveInfo] = useState(false);
 
   const { data: wallets, isLoading } = useQuery<WalletDetails[]>({
     queryKey: ["/api/wallets"],
@@ -38,6 +40,7 @@ export default function WalletManagementPage() {
       address: "0x1234...5678",
       balance: "1000 ETH",
       type: "dev",
+      isAuthorized: user?.username === "admin@marinedao.com",
       lockPeriod: {
         start: "2025-01-01",
         end: "2026-01-01",
@@ -55,6 +58,7 @@ export default function WalletManagementPage() {
       address: "0x8765...4321",
       balance: "5000 ETH",
       type: "treasury",
+      isAuthorized: user?.isKYCVerified,
       assets: [
         {
           id: 2,
@@ -68,12 +72,14 @@ export default function WalletManagementPage() {
       address: "0xabcd...efgh",
       balance: "200 ETH",
       type: "dividends-received",
+      isAuthorized: user?.isKYCVerified,
       assets: [],
     },
     {
       address: "0xijkl...mnop",
       balance: "150 ETH",
       type: "dividends-distributed",
+      isAuthorized: user?.isKYCVerified,
       assets: [],
     },
   ];
@@ -103,6 +109,10 @@ export default function WalletManagementPage() {
       case "dividends-distributed":
         return "Dividends Distributed";
     }
+  };
+
+  const maskSensitiveData = (data: string) => {
+    return "••••••••";
   };
 
   if (isLoading) {
@@ -147,11 +157,15 @@ export default function WalletManagementPage() {
                 <div className="space-y-4">
                   <div>
                     <p className="text-sm font-medium">Address</p>
-                    <p className="font-mono">{wallet.address}</p>
+                    <p className="font-mono">
+                      {wallet.isAuthorized ? wallet.address : maskSensitiveData(wallet.address)}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm font-medium">Balance</p>
-                    <p className="text-2xl font-bold">{wallet.balance}</p>
+                    <p className="text-2xl font-bold">
+                      {wallet.isAuthorized ? wallet.balance : maskSensitiveData(wallet.balance)}
+                    </p>
                   </div>
                   {wallet.lockPeriod && (
                     <div>
@@ -168,8 +182,19 @@ export default function WalletManagementPage() {
                         variant="outline"
                         className="w-full"
                         onClick={() => setSelectedWallet(wallet)}
+                        disabled={!wallet.isAuthorized}
                       >
-                        View Associated Assets
+                        {wallet.isAuthorized ? (
+                          <>
+                            <Eye className="w-4 h-4 mr-2" />
+                            View Associated Assets
+                          </>
+                        ) : (
+                          <>
+                            <EyeOff className="w-4 h-4 mr-2" />
+                            Unauthorized Access
+                          </>
+                        )}
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
