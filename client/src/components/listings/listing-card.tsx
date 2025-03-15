@@ -18,7 +18,7 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
   // Use new image for Oyster ship
   const getImageUrl = () => {
     if (listing.title === "OYSTER Container Ship") {
-      return "/attached_assets/5369295.webp";
+      return "https://bafybeibhma7mcjbzynhxkog3pibmz7ful5w5djdo45ub6rwmc4gefuvj3i.ipfs.w3s.link/ipfs/bafybeibhma7mcjbzynhxkog3pibmz7ful5w5djdo45ub6rwmc4gefuvj3i/5369295.webp";
     }
     return listing.imageUrl;
   };
