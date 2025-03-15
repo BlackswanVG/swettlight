@@ -25,8 +25,6 @@ export const listings = pgTable("listings", {
   status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   details: jsonb("details").notNull().$type<Record<string, unknown>>(),
-  whitepaperCID: text("whitepaper_cid"),
-  legalDocumentsCID: text("legal_documents_cid"),
 });
 
 export const votes = pgTable("votes", {
