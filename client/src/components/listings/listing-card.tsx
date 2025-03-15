@@ -15,6 +15,14 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
 
+  // Use new image for Oyster ship
+  const getImageUrl = () => {
+    if (listing.title === "OYSTER Container Ship") {
+      return "/attached_assets/5369295.webp";
+    }
+    return listing.imageUrl;
+  };
+
   return (
     <Card>
       <CardHeader className="space-y-1">
@@ -38,7 +46,7 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
               </div>
             )}
             <img 
-              src={listing.imageUrl}
+              src={getImageUrl()}
               alt={listing.title}
               className={`h-full w-full object-cover transition-opacity duration-300 ${
                 imageLoading ? 'opacity-0' : 'opacity-100'
@@ -47,8 +55,6 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
               onError={(e) => {
                 setImageLoading(false);
                 setImageError(true);
-                const target = e.target as HTMLImageElement;
-                target.src = listing.imageUrl;
               }}
             />
           </div>
