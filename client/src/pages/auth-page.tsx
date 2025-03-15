@@ -22,10 +22,15 @@ import {
 } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { connectWallet } from "@/lib/web3";
+import { Loader2, Wallet } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AuthPage() {
   const { user, loginMutation, registerMutation } = useAuth();
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const [isConnecting, setIsConnecting] = useState(false);
 
   if (user) {
     setLocation("/");
@@ -34,18 +39,31 @@ export default function AuthPage() {
 
   const loginForm = useForm({
     resolver: zodResolver(insertUserSchema.pick({ username: true, password: true })),
+    defaultValues: { username: "", password: "" }
   });
 
   const registerForm = useForm({
     resolver: zodResolver(insertUserSchema),
+    defaultValues: { username: "", password: "", walletAddress: "" }
   });
 
   const handleConnectWallet = async () => {
     try {
+      setIsConnecting(true);
       const { address } = await connectWallet();
       registerForm.setValue("walletAddress", address);
+      toast({
+        title: "Wallet Connected",
+        description: `Connected to ${address.slice(0, 6)}...${address.slice(-4)}`,
+      });
     } catch (error) {
-      console.error("Failed to connect wallet:", error);
+      toast({
+        title: "Failed to connect wallet",
+        description: error instanceof Error ? error.message : "Please try again",
+        variant: "destructive",
+      });
+    } finally {
+      setIsConnecting(false);
     }
   };
 
@@ -70,7 +88,7 @@ export default function AuthPage() {
                   <TabsTrigger value="register">Register</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="login">
+                <TabsContent value="login" className="space-y-4">
                   <Form {...loginForm}>
                     <form
                       onSubmit={loginForm.handleSubmit((data) => loginMutation.mutate(data))}
@@ -103,17 +121,38 @@ export default function AuthPage() {
                         )}
                       />
                       <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full"
+                        onClick={handleConnectWallet}
+                        disabled={isConnecting}
+                      >
+                        {isConnecting ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          <Wallet className="mr-2 h-4 w-4" />
+                        )}
+                        {isConnecting ? "Connecting..." : "Connect Wallet"}
+                      </Button>
+                      <Button
                         type="submit"
                         className="w-full"
                         disabled={loginMutation.isPending}
                       >
-                        Login
+                        {loginMutation.isPending ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Logging in...
+                          </>
+                        ) : (
+                          "Login"
+                        )}
                       </Button>
                     </form>
                   </Form>
                 </TabsContent>
 
-                <TabsContent value="register">
+                <TabsContent value="register" className="space-y-4">
                   <Form {...registerForm}>
                     <form
                       onSubmit={registerForm.handleSubmit((data) =>
@@ -147,20 +186,46 @@ export default function AuthPage() {
                           </FormItem>
                         )}
                       />
+                      <FormField
+                        control={registerForm.control}
+                        name="walletAddress"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Wallet Address</FormLabel>
+                            <FormControl>
+                              <Input {...field} disabled placeholder="Connect your wallet below" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                       <Button
                         type="button"
                         variant="outline"
                         className="w-full"
                         onClick={handleConnectWallet}
+                        disabled={isConnecting}
                       >
-                        Connect Wallet
+                        {isConnecting ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          <Wallet className="mr-2 h-4 w-4" />
+                        )}
+                        {isConnecting ? "Connecting..." : "Connect Wallet"}
                       </Button>
                       <Button
                         type="submit"
                         className="w-full"
                         disabled={registerMutation.isPending}
                       >
-                        Register
+                        {registerMutation.isPending ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Registering...
+                          </>
+                        ) : (
+                          "Register"
+                        )}
                       </Button>
                     </form>
                   </Form>
