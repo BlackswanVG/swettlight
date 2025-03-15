@@ -17,19 +17,17 @@ export const listings = pgTable("listings", {
   vesselType: text("vessel_type").notNull(),
   projectedROI: text("projected_roi").notNull(),
   ownershipPercentage: integer("ownership_percentage").notNull(),
-  createdById: integer("created_by_id")
-    .references(() => users.id)
-    .notNull(),
-  status: text("status").notNull().default("pending"),
+  createdById: integer("created_by_id").notNull(),
+  status: text("status").notNull().default("pending"), // pending, approved, rejected
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  details: jsonb("details").notNull().$type<Record<string, unknown>>(),
+  details: jsonb("details").notNull(),
 });
 
 export const votes = pgTable("votes", {
   id: serial("id").primaryKey(),
   listingId: integer("listing_id").notNull(),
   userId: integer("user_id").notNull(),
-  vote: text("vote").notNull(),
+  vote: text("vote").notNull(), // approve, reject
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
