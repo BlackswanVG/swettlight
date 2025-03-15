@@ -2,7 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Ship } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { Listing } from "@shared/schema";
+import { useState } from "react";
 
 interface ListingCardProps {
   listing: Listing;
@@ -10,20 +12,22 @@ interface ListingCardProps {
 }
 
 export default function ListingCard({ listing, onVote }: ListingCardProps) {
+  const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
+
   // Function to handle IPFS and DID URLs
   const getImageUrl = (url: string | undefined) => {
     if (!url) return undefined;
 
     // Handle DID key format
     if (url.startsWith('did:key:')) {
-      // For now, we'll use a placeholder for DID keys
-      return url;
+      // Convert DID key to IPFS gateway URL
+      return `https://w3s.link/ipfs/${url.split(':').pop()}`;
     }
 
-    // Handle IPFS URLs
+    // Handle IPFS URLs - ensure we're using a reliable gateway
     if (url.includes('ipfs')) {
-      // Use the direct IPFS gateway URL if provided
-      return url;
+      return url.replace('ipfs://', 'https://w3s.link/ipfs/');
     }
 
     return url;
@@ -45,13 +49,22 @@ export default function ListingCard({ listing, onVote }: ListingCardProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         {listing.imageUrl && (
-          <div className="relative w-full h-48 overflow-hidden rounded-md">
+          <div className="relative aspect-video w-full overflow-hidden rounded-md bg-muted">
+            {imageLoading && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Skeleton className="h-full w-full" />
+              </div>
+            )}
             <img 
               src={getImageUrl(listing.imageUrl)}
               alt={listing.title}
-              className="w-full h-full object-cover"
+              className={`h-full w-full object-cover transition-opacity duration-300 ${
+                imageLoading ? 'opacity-0' : 'opacity-100'
+              }`}
+              onLoad={() => setImageLoading(false)}
               onError={(e) => {
-                // Fallback if image fails to load
+                setImageLoading(false);
+                setImageError(true);
                 const target = e.target as HTMLImageElement;
                 target.src = '/placeholder-vessel.png';
               }}
